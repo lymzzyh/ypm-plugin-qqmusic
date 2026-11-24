@@ -1,0 +1,24 @@
+{
+  "id": "qqmusic",
+  "name": "QQ音乐",
+  "version": "0.1.0",
+  "author": "lymzzyh",
+  "minAppVersion": "3.0.0",
+  "main": "index.js",
+  "icon": "icon.png",
+  "description": "QQ 音乐 App 扫码登录、搜索、歌单、专辑和歌词。播放遵循账号权限；扫码需启用随插件附带的本机程序。",
+  "playback": "stream",
+  "permissions": {
+    "network": ["u.y.qq.com"],
+    "process": [
+      "/bin/chmod",
+      "bin/darwin-amd64/qqmusic-channel",
+      "bin/darwin-arm64/qqmusic-channel",
+      "bin/linux-amd64/qqmusic-channel",
+      "bin/linux-arm64/qqmusic-channel",
+      "bin/windows-amd64/qqmusic-channel.exe",
+      "bin/windows-arm64/qqmusic-channel.exe"
+    ]
+  },
+  "navigation": [{ "builtin": "home" }, { "builtin": "liked" }, { "builtin": "savedAlbums" }, { "title": "排行榜", "page": "charts" }]
+}
