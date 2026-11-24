@@ -47,5 +47,6 @@
   "请先登录QQ音乐": "Primero inicia sesión en QQ Music",
   "请在插件菜单中开启“允许运行本机程序”，以连接 QQ 音乐 App 扫码通道": "Activa «Permitir ejecutar programas locales» en el menú del complemento para el acceso QR con QQ Music",
   "请用 QQ 音乐 App 扫码，并在手机上确认登录": "Escanea con la app QQ Music y confirma el acceso en tu teléfono",
-  "请稍后重试": "Inténtalo más tarde"
+  "请稍后重试": "Inténtalo más tarde",
+  "QQ音乐返回了暂不支持的音频地址，请更新插件或稍后重试": "QQ Music devolvió una dirección de audio no compatible. Actualiza el complemento o inténtalo más tarde"
 }

@@ -47,5 +47,6 @@
   "请先登录QQ音乐": "Sign in to QQ Music first",
   "请在插件菜单中开启“允许运行本机程序”，以连接 QQ 音乐 App 扫码通道": "Enable “Allow running native programs” in the plugin menu for QQ Music app QR sign-in",
   "请用 QQ 音乐 App 扫码，并在手机上确认登录": "Scan with the QQ Music app and confirm sign-in on your phone",
-  "请稍后重试": "Please try again later"
+  "请稍后重试": "Please try again later",
+  "QQ音乐返回了暂不支持的音频地址，请更新插件或稍后重试": "QQ Music returned an unsupported audio URL. Update the plugin or try again later"
 }

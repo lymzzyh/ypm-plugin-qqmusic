@@ -129,15 +129,24 @@ export async function stream({ id, quality = 'high' }) {
     : quality === 'standard' ? [['M500', '.mp3', 'standard', 128000]] : [['M800', '.mp3', 'high', 320000], ['M500', '.mp3', 'standard', 128000]];
   const names = formats.map(([prefix, ext]) => `${prefix}${media ? resourceId(media) : mid + mid}${ext}`);
   const data = await cgi('music.vkey.GetVkey', 'UrlGetVkey', { filename: names, guid: guid(), songmid: names.map(() => mid), songtype: names.map(() => song.type || 0), uin: session().uin || '0', loginflag: session().musickey ? 1 : 0, platform: '20', ctx: 0 });
+  let unsupportedAddress = false;
   for (const item of model.list(data.midurlinfo)) {
     const pos = names.indexOf(item.filename);
-    if (pos < 0 || !item.purl || item.isTry || item.is_try || item.trial || /(?:^|\/)RS02|(?:^|[?&])(?:fromtag=preview|trial=1)/i.test(item.purl)) continue;
-    const base = model.list(data.sip).find((x) => /^https?:\/\//.test(x)) || 'https://isure.stream.qqmusic.qq.com/';
-    const url = new URL(item.purl, base.replace(/^http:/, 'https:'));
-    if (url.protocol !== 'https:' || !(url.hostname.endsWith('.qqmusic.qq.com') || url.hostname.endsWith('.qqmusic.tc.qq.com'))) continue;
-    if (url.pathname.split('/').pop() !== names[pos]) continue;
-    return { url: url.href, type: formats[pos][1].slice(1), quality: formats[pos][2], bitRate: formats[pos][3] };
+    if (pos < 0 || !item.purl || Number(item.result || 0) !== 0 || item.isTry || item.is_try || item.trial || /(?:^|\/)RS02|(?:^|[?&])(?:fromtag=preview|trial=1)/i.test(item.purl)) continue;
+    unsupportedAddress = true;
+    const bases = model.list(data.sip).filter((x) => /^https?:\/\//.test(x));
+    if (!bases.length) bases.push('https://isure.stream.qqmusic.qq.com/');
+    for (const base of bases) {
+      let url;
+      try { url = new URL(item.purl, base.replace(/^http:/, 'https:')); } catch (_) { continue; }
+      // aqqmusic 是官方返回的独立 CDN 名称，并非 qqmusic.tc.qq.com 的子域名。
+      const official = url.hostname === 'aqqmusic.tc.qq.com' || url.hostname.endsWith('.qqmusic.qq.com') || url.hostname.endsWith('.qqmusic.tc.qq.com');
+      if (url.protocol !== 'https:' || !official || url.username || url.password || (url.port && url.port !== '443')) continue;
+      if (url.pathname.split('/').pop() !== names[pos]) continue;
+      return { url: url.href, type: formats[pos][1].slice(1), quality: formats[pos][2], bitRate: formats[pos][3] };
+    }
   }
+  if (unsupportedAddress) fail('failed', 'QQ音乐返回了暂不支持的音频地址，请更新插件或稍后重试');
   fail('unavailable', session().musickey ? '此歌曲需要会员、单独购买，或当前地区无版权；不会以试听片段代替完整歌曲' : '此歌曲需要登录或相应会员权限，请先扫码登录QQ音乐');
 }
 

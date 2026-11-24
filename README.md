@@ -57,7 +57,7 @@ cd ..
 # Rebuild all six native helpers
 ./build-helper.sh
 
-# Create dist/YesPlayMusic-qqmusic-0.1.0.zip
+# Create dist/YesPlayMusic-qqmusic-0.1.1.zip
 python3 package.py
 ```
 

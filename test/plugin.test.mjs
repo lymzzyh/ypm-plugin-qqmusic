@@ -133,3 +133,22 @@ test('歌词支持 LRC、Base64 和非法密文',async()=>{
  assert.equal(l('[00:01.00]测试 &amp; 歌词'),'[00:01.00]测试 & 歌词');
  assert.equal(l(Buffer.from('[00:01.00]测试').toString('base64')),'[00:01.00]测试');assert.equal(l('0'.repeat(16)),'');
 });
+
+test('已购歌曲使用官方 aqqmusic CDN，不误判成无版权',async()=>{
+ const r=await runtime();
+ r.store.set('session',{uin:'42',musickey:'fixture-purchased-session',loginType:2});
+ r.module('models.js').track({mid:'purchased1',file:{media_mid:'media2'}});
+ r.state.reply=()=>({sip:['http://aqqmusic.tc.qq.com/','http://sjy6.stream.qqmusic.qq.com/'],midurlinfo:[{result:0,filename:'M800media2.mp3',purl:'M800media2.mp3?vkey=fixture'}]});
+ const stream=await r.plugin.stream({id:'purchased1'});
+ assert.equal(new URL(stream.url).hostname,'aqqmusic.tc.qq.com');assert.equal(new URL(stream.url).protocol,'https:');assert.equal(stream.quality,'high');
+ assert.equal(r.requests.at(-1).req_0.param.uin,'42');
+});
+
+test('未知音频地址单独报错，合法后备 CDN 可用，伪造域名不会被放行',async()=>{
+ const r=await runtime();r.module('models.js').track({mid:'s1',file:{media_mid:'m1'}});
+ let sip=['https://aqqmusic.tc.qq.com.evil.example/'];
+ r.state.reply=()=>({sip,midurlinfo:[{result:0,filename:'M800m1.mp3',purl:'M800m1.mp3?vkey=fixture'}]});
+ await assert.rejects(r.plugin.stream({id:'s1'}),e=>e.code==='failed'&&e.message.includes('音频地址')&&!e.message.includes('版权'));
+ sip.push('https://sjy6.stream.qqmusic.qq.com/');
+ assert.equal(new URL((await r.plugin.stream({id:'s1'})).url).hostname,'sjy6.stream.qqmusic.qq.com');
+});

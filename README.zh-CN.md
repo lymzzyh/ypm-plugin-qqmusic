@@ -60,7 +60,7 @@ cd ..
 # 重新构建六个平台的通道程序
 ./build-helper.sh
 
-# 打包，生成 dist/YesPlayMusic-qqmusic-0.1.0.zip
+# 打包，生成 dist/YesPlayMusic-qqmusic-0.1.1.zip
 python3 package.py
 ```
 
