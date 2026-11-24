@@ -17,6 +17,10 @@ A QQ Music source for [YesPlayMusic 3.0](https://github.com/qier222/YesPlayMusic
 
 Playlists and collections are currently read-only. Playback follows subscription, purchase, regional, and licensing permissions. Restricted tracks show an error instead of playing a preview as a full track.
 
+## Sound quality
+
+Choose a quality in Settings → Plugins → QQ Music → Settings. Standard, High and Lossless are available. The plugin selection overrides the player’s default. “Follow player” uses the player’s requested quality, currently High by default. If no full audio is available, the plugin tries lower qualities without using previews. Account, network and sign-in errors are reported normally. Changes apply when a new stream URL is requested; cached audio may keep its previous quality.
+
 ## Install and sign in
 
 1. Use YesPlayMusic **3.0.0 or later**.
@@ -57,7 +61,7 @@ cd ..
 # Rebuild all six native helpers
 ./build-helper.sh
 
-# Create dist/YesPlayMusic-qqmusic-0.1.1.zip
+# Create dist/YesPlayMusic-qqmusic-0.2.0.zip
 python3 package.py
 ```
 

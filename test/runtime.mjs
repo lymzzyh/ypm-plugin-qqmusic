@@ -13,6 +13,7 @@ export async function runtime(options = {}) {
     setTimeout, clearTimeout, setInterval, clearInterval, console,
     host: {
       platform: 'darwin', arch: 'amd64', dir: root.replace(/\/$/, ''),
+      setting: (key) => state.settings?.[key] ?? '',
       t: (key) => {
         try { return JSON.parse(readFileSync(path.join(root, 'locales', state.language + '.json')))[key] ?? key; }
         catch { return key; }

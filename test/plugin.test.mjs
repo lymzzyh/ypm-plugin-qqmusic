@@ -152,3 +152,21 @@ test('未知音频地址单独报错，合法后备 CDN 可用，伪造域名不
  sip.push('https://sjy6.stream.qqmusic.qq.com/');
  assert.equal(new URL((await r.plugin.stream({id:'s1'})).url).hostname,'sjy6.stream.qqmusic.qq.com');
 });
+
+test('QQ 音质设置独立选择，最高优先，受限时只向下回退',async()=>{
+ const r=await runtime({settings:{quality:'lossless'}});
+ r.module('models.js').track({mid:'s1',file:{media_mid:'m1'}});
+ let losslessAvailable=true;
+ r.state.reply=({param})=>({sip:['https://aqqmusic.tc.qq.com/'],midurlinfo:[...param.filename].reverse().map(filename=>({filename,result:0,purl:!losslessAvailable&&filename.startsWith('F000')?'':filename+'?vkey=fixture'}))});
+ assert.equal((await r.plugin.stream({id:'s1',quality:'high'})).quality,'lossless');
+ assert.deepEqual(clone(r.requests.at(-1).req_0.param.filename),['F000m1.flac','M800m1.mp3','M500m1.mp3']);
+ losslessAvailable=false;
+ assert.equal((await r.plugin.stream({id:'s1'})).quality,'high');
+ r.state.settings.quality='standard';
+ assert.equal((await r.plugin.stream({id:'s1',quality:'lossless'})).quality,'standard');
+ assert.deepEqual(clone(r.requests.at(-1).req_0.param.filename),['M500m1.mp3']);
+ for(const setting of ['','invalid']) {
+  r.state.settings.quality=setting;losslessAvailable=true;
+  assert.equal((await r.plugin.stream({id:'s1',quality:'lossless'})).quality,'lossless');
+ }
+});

@@ -123,6 +123,10 @@ async function songDetail(id) {
 }
 
 export async function stream({ id, quality = 'high' }) {
+  const choices = ['standard', 'high', 'lossless'];
+  const setting = typeof host.setting === 'function' ? host.setting('quality') : '';
+  // 插件选择可以高于宿主默认的 high，不采用“音质上限”的限制方式。
+  quality = choices.includes(setting) ? setting : choices.includes(quality) ? quality : 'high';
   const song = await songDetail(id);
   const mid = resourceId(song.mid || id), media = song.file?.media_mid;
   const formats = quality === 'lossless' ? [['F000', '.flac', 'lossless', 0], ['M800', '.mp3', 'high', 320000], ['M500', '.mp3', 'standard', 128000]]
@@ -130,7 +134,9 @@ export async function stream({ id, quality = 'high' }) {
   const names = formats.map(([prefix, ext]) => `${prefix}${media ? resourceId(media) : mid + mid}${ext}`);
   const data = await cgi('music.vkey.GetVkey', 'UrlGetVkey', { filename: names, guid: guid(), songmid: names.map(() => mid), songtype: names.map(() => song.type || 0), uin: session().uin || '0', loginflag: session().musickey ? 1 : 0, platform: '20', ctx: 0 });
   let unsupportedAddress = false;
-  for (const item of model.list(data.midurlinfo)) {
+  // 服务端返回顺序不保证音质排序，按请求的优先级选择完整音频。
+  const ordered = names.flatMap((name) => model.list(data.midurlinfo).filter((item) => item.filename === name));
+  for (const item of ordered) {
     const pos = names.indexOf(item.filename);
     if (pos < 0 || !item.purl || Number(item.result || 0) !== 0 || item.isTry || item.is_try || item.trial || /(?:^|\/)RS02|(?:^|[?&])(?:fromtag=preview|trial=1)/i.test(item.purl)) continue;
     unsupportedAddress = true;

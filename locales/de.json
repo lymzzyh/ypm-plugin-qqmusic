@@ -48,5 +48,11 @@
   "请在插件菜单中开启“允许运行本机程序”，以连接 QQ 音乐 App 扫码通道": "Für die QR-Anmeldung mit der QQ Music App im Plugin-Menü „Ausführen lokaler Programme erlauben“ aktivieren",
   "请用 QQ 音乐 App 扫码，并在手机上确认登录": "Mit der QQ Music App scannen und Anmeldung auf dem Smartphone bestätigen",
   "请稍后重试": "Bitte später erneut versuchen",
-  "QQ音乐返回了暂不支持的音频地址，请更新插件或稍后重试": "QQ Music hat eine nicht unterstützte Audio-Adresse zurückgegeben. Plugin aktualisieren oder später erneut versuchen"
+  "QQ音乐返回了暂不支持的音频地址，请更新插件或稍后重试": "QQ Music hat eine nicht unterstützte Audio-Adresse zurückgegeben. Plugin aktualisieren oder später erneut versuchen",
+  "音质": "Audioqualität",
+  "优先使用所选音质，不可用时自动降低": "Gewählte Qualität bevorzugen; bei Nichtverfügbarkeit niedrigere Qualität verwenden",
+  "跟随播放器": "Player folgen",
+  "标准": "Standard",
+  "高音质": "Hohe Qualität",
+  "无损": "Verlustfrei"
 }

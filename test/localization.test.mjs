@@ -5,6 +5,10 @@ import { runtime, root } from './runtime.mjs';
 
 const manifest=JSON.parse(readFileSync(root+'/plugin.json'));
 const keys=new Set([manifest.name,manifest.description,...manifest.navigation.map(n=>n.title).filter(Boolean)]);
+for(const item of manifest.settings||[]) {
+ keys.add(item.label);if(item.help)keys.add(item.help);
+ for(const option of item.options||[])keys.add(option.label);
+}
 for(const file of ['index.js','client.js','login.js','models.js']) {
  for(const m of readFileSync(root+'/'+file,'utf8').matchAll(/'([^'\n]*[\u3400-\u9fff][^'\n]*)'/g))keys.add(m[1]);
 }
